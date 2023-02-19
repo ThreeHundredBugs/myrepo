@@ -6,5 +6,5 @@ int main() {
 }
 
 void unreachable() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello, Stranger!" << std::endl;
 }
