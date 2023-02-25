@@ -1,19 +1,20 @@
 node {
     checkout scm
 
+    def serverImage = "myserver:${env.BUILD_ID}"
+
     stage('Build image') {
-        def serverImage = docker.build("myserver:${env.BUILD_ID}", "./src")
-        // serverImage.push()
+        sh "docker build --tag ${serverImage} ./src"
+        // docker push
     }
 
     stage('Run tests') {
-        serverImage.inside {
-            sh 'echo Run tests'
-            sh 'echo ...'
-        }
+        sh "docker run --rm ${serverImage} echo 'run tests....' "
     }
 
-    stage('Deploy') {
-        // sh 'IMAGE=myserver:${env.BUILD_ID} kubectl apply -k kustomize'
+    if (env.BRANCH_NAME == "master") {
+        stage('Deploy') {
+            // sh 'IMAGE=myserver:${env.BUILD_ID} kubectl apply -k kustomize'
+        }
     }
 }
