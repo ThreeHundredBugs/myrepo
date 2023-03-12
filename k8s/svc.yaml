@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zverochkin-test-server
+  namespace: zverochkin-test
+spec:
+  selector:
+    app: zverochkin-test-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      name: http

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zverochkin-test-server
+  namespace: zverochkin-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zverochkin-test-server
+  template:
+    metadata:
+      labels:
+        app: zverochkin-test-server
+    spec:
+      containers:
+      - name: web
+        image: vegassor/server:lab4
+        ports:
+        - containerPort: 8080
