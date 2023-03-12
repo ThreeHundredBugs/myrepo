@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 )
 
@@ -17,7 +18,38 @@ func main() {
 }
 
 func root(w http.ResponseWriter, _ *http.Request) {
-	fmt.Fprintln(w, "Server works!")
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintln(w, "Could not get network interfaces")
+		return
+	}
+
+	for _, iface := range ifaces {
+		addrs, err := iface.Addrs()
+
+		if iface.Name == "lo" {
+			continue
+		}
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintln(w, "Could not get IP addresses")
+			continue
+		}
+
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+
+			fmt.Fprintln(w, "Server's IP: ", ip)
+		}
+	}
 }
 
 func readiness(w http.ResponseWriter, _ *http.Request) {
@@ -31,7 +63,7 @@ func readiness(w http.ResponseWriter, _ *http.Request) {
 }
 
 func liveness(w http.ResponseWriter, _ *http.Request) {
-	if Ready {
+	if Live {
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusServiceUnavailable)

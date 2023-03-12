@@ -16,5 +16,20 @@ spec:
       containers:
       - name: web
         image: vegassor/server:lab4
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        redinessProbe:
+          httpGet:
+            path: /-/health/readiness
+            port: 8080
+          periodSeconds: 1
+          failureThreshold: 1
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /-/health/liveness
+            port: 8080
+          periodSeconds: 1
+          failureThreshold: 1
+          successThreshold: 1

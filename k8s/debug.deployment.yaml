@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zverochkin-test-busybox
+  namespace: zverochkin-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zverochkin-test-busybox
+  template:
+    metadata:
+      labels:
+        app: zverochkin-test-busybox
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command:
+            - tail
+            - -f
+            - /dev/null
